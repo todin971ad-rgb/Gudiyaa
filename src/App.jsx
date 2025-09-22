@@ -7,6 +7,7 @@ export default function GudiyaaLoveSite() {
   const [cardIndex, setCardIndex] = useState(0);
   const [showScroll, setShowScroll] = useState(false);
   const [isNight, setIsNight] = useState(false);
+  const [isEvening, setIsEvening] = useState(false);
   const [fallingStar, setFallingStar] = useState(false);
 
   const cards = [
@@ -28,16 +29,19 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
     { symbol: "🧿", color: "text-blue-500", size: 30 }
   ];
 
-  // Night effect based on time
+  // Determine night and evening phases
   useEffect(() => {
     const now = new Date();
     const hour = now.getHours();
     setIsNight(hour >= 18 || hour < 5);
+    setIsEvening(hour >= 15 && hour < 18);
 
     const interval = setInterval(() => {
       const h = new Date().getHours();
       setIsNight(h >= 18 || h < 5);
+      setIsEvening(h >= 15 && h < 18);
     }, 60 * 1000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -61,10 +65,45 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
   return (
     <div className="min-h-screen relative flex flex-col items-center justify-start bg-gradient-to-b from-pink-200 via-pink-300 to-rose-200 font-poppins overflow-hidden">
 
-      {/* Night Sky Top */}
+      {/* Sunset Sky Top 1/3 */}
+      {isEvening && (
+        <div className="absolute top-0 left-0 w-full h-1/3 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-orange-400 via-red-400 to-pink-300"></div>
+          {/* Sun */}
+          <motion.div
+            className="absolute left-1/2 transform -translate-x-1/2 w-16 h-16 bg-yellow-300 rounded-full shadow-[0_0_40px_10px_rgba(255,200,0,0.4)]"
+            animate={{
+              top: ["10%", "70%"]
+            }}
+            transition={{
+              duration: 20,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "loop"
+            }}
+          />
+          {/* Clouds */}
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute bg-white/70 rounded-full blur-xl"
+              style={{
+                width: `${80 + i * 20}px`,
+                height: `${40 + i * 10}px`,
+                top: `${10 + i * 15}%`
+              }}
+              initial={{ x: i % 2 === 0 ? "-20%" : "120%" }}
+              animate={{ x: i % 2 === 0 ? "120%" : "-20%" }}
+              transition={{ duration: 40 + i * 15, repeat: Infinity, ease: "linear" }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Night Sky */}
       {isNight && (
         <div className="absolute top-0 left-0 w-full h-1/3 overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#0b0b3b] via-[#1c1c55] to-transparent"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#0b0b3b] via-[#1c1c55] to-pink-300"></div>
           {/* Crescent Moon */}
           <div className="absolute top-4 left-4 w-12 h-12 bg-yellow-200 rounded-full shadow-[0_0_30px_8px_rgba(255,255,204,0.3)]">
             <div className="w-12 h-12 rounded-full bg-[#0b0b3b] absolute top-0 left-2"></div>
@@ -94,7 +133,7 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
         </div>
       )}
 
-      {/* Floating Emojis only on pink area */}
+      {/* Floating Emojis on pink area */}
       {[...Array(25)].map((_, i) => {
         const emoji = i % 2 === 0 ? floatingEmojis[0] : floatingEmojis[1];
         return (
