@@ -6,8 +6,10 @@ export default function GudiyaaLoveSite() {
   const [open, setOpen] = useState(false);
   const [cardIndex, setCardIndex] = useState(0);
   const [showScroll, setShowScroll] = useState(false);
-  const [phase, setPhase] = useState("day"); // "day", "evening", "night"
+  const [isNight, setIsNight] = useState(false);
+  const [isEvening, setIsEvening] = useState(false);
   const [fallingStar, setFallingStar] = useState(false);
+  const [showSpecialCard, setShowSpecialCard] = useState(false);
 
   const cards = [
     "You are my tiny baby, my little girl 💕. Every day waking up to your Morningssssweetyyy is the sweetest morning I can have.",
@@ -28,28 +30,27 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
     { symbol: "🧿", color: "text-blue-500", size: 30 }
   ];
 
-  // Determine phase based on time
+  // Determine night and evening phases
   useEffect(() => {
-    const determinePhase = () => {
-      const h = new Date().getHours();
-      if (h >= 18 || h < 5) setPhase("night");
-      else if (h >= 15 && h < 18) setPhase("evening");
-      else setPhase("day");
+    const updateTime = () => {
+      const hour = new Date().getHours();
+      setIsNight(hour >= 18 || hour < 5);
+      setIsEvening(hour >= 15 && hour < 18);
     };
-    determinePhase();
-    const interval = setInterval(determinePhase, 60 * 1000);
+    updateTime();
+    const interval = setInterval(updateTime, 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // Falling stars for night
+  // Falling star
   useEffect(() => {
-    if (phase !== "night") return;
+    if (!isNight) return;
     const interval = setInterval(() => {
       setFallingStar(true);
       setTimeout(() => setFallingStar(false), 1500);
     }, 10000 + Math.random() * 10000);
     return () => clearInterval(interval);
-  }, [phase]);
+  }, [isNight]);
 
   const stars = [...Array(30)].map((_, i) => ({
     top: Math.random() * 33,
@@ -59,41 +60,42 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
   }));
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start bg-gradient-to-b from-pink-200 via-pink-300 to-rose-200 font-poppins overflow-hidden">
+    <div className="min-h-screen relative flex flex-col items-center justify-start font-poppins overflow-hidden"
+         style={{background: 'linear-gradient(to bottom, #FF8C42 0%, #FFC3A0 33%, #FFC3A0 100%)'}}>
 
-      {/* Evening Sunset Top 1/3 */}
-      {phase === "evening" && (
+      {/* Top 1/3 Sunset */}
+      {isEvening && (
         <div className="absolute top-0 left-0 w-full h-1/3 overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-orange-500 via-red-400 to-pink-300/50"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-orange-500 via-red-500 to-transparent"></div>
           {/* Sun */}
           <motion.div
-            className="absolute left-1/2 transform -translate-x-1/2 w-16 h-16 bg-yellow-300 rounded-full shadow-[0_0_40px_10px_rgba(255,200,0,0.4)]"
+            className="absolute left-1/2 transform -translate-x-1/2 w-20 h-20 bg-yellow-400 rounded-full shadow-[0_0_40px_10px_rgba(255,200,0,0.4)]"
             animate={{ top: ["10%", "80%"] }}
             transition={{ duration: 8, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" }}
           />
           {/* Clouds */}
-          {[...Array(3)].map((_, i) => (
+          {[...Array(4)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute bg-white/70 rounded-full blur-xl"
               style={{
                 width: `${80 + i * 20}px`,
                 height: `${40 + i * 10}px`,
-                top: `${10 + i * 15}%`
+                top: `${10 + i * 12}%`,
               }}
               initial={{ x: i % 2 === 0 ? "-20%" : "120%" }}
               animate={{ x: i % 2 === 0 ? "120%" : "-20%" }}
-              transition={{ duration: 40 + i * 15, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 35 + i * 10, repeat: Infinity, ease: "linear" }}
             />
           ))}
         </div>
       )}
 
-      {/* Night Sky */}
-      {phase === "night" && (
+      {/* Night */}
+      {isNight && (
         <div className="absolute top-0 left-0 w-full h-1/3 overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#0b0b3b] via-[#1c1c55] to-transparent"></div>
-          {/* Crescent Moon */}
+          {/* Moon */}
           <div className="absolute top-4 left-4 w-12 h-12 bg-yellow-200 rounded-full shadow-[0_0_30px_8px_rgba(255,255,204,0.3)]">
             <div className="w-12 h-12 rounded-full bg-[#0b0b3b] absolute top-0 left-2"></div>
           </div>
@@ -225,6 +227,48 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
         )}
       </AnimatePresence>
 
+      {/* Special Clickable Emoji */}
+      <div className="relative mt-10 z-10 flex flex-col items-center">
+        <p className="text-2xl text-rose-500 font-bold mb-2">Click me jaan 🎀</p>
+        <motion.div
+          className="text-[80px] cursor-pointer select-none"
+          style={{ color: "#FF6B6B" }}
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowSpecialCard(true)}
+        >
+          🫶
+        </motion.div>
+
+        <AnimatePresence>
+          {showSpecialCard && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.4 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            >
+              <motion.div
+                className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 flex flex-col items-center"
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 50, opacity: 0 }}
+              >
+                <button
+                  onClick={() => setShowSpecialCard(false)}
+                  className="absolute top-4 right-4 text-rose-500 hover:text-rose-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <div className="text-center text-rose-600 text-lg font-semibold">
+                  💌 You make me say AWWW!! I loveyouuuuu soo much my pookiedookie🎀❤💌
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
