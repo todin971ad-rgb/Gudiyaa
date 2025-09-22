@@ -19,7 +19,7 @@ export default function GudiyaaLoveSite() {
   const longMessage = `
 My pyariii Gudiyaa 💕 
 
-From the moment we met I somehow knew in my heart that youuu are the one and since that day I have not loved anyone more than you 🥺. I want to spend every single day making you feel loved and special because you deserve it and you desrveeee so much moreee, Jaan. You are my heart. No words can truly capture how much I adore you. Every day theee love grows innn my dill. I just lovee youuu soo soo much. You are my family, my comfort, my wife. We will live our whole life together just each other’s. I’ll make my girl's each and every dream come true. We will wakeee up together and wee will ninii togetherrr. Ap Meri Sanju ho aur ap mere he rahogi. I’ll never let your cutest smileee fade. You make me smile, you make meee happy,you love me so much YOU are mY Family my home my goo to comfort person i just need at the starting and ending and during all myy dayssss. words cant tell you jo mere dil me hai. you me and our little family 💕just ME & YOU 💟💟❤. With lotsss of loveee meriii jaannn, yourrrr babyyyy, Aruuuuuuu 💗💗💗🤭
+From the moment we met I somehow knew in my heart that youuu are the one and since that day I have not loved anyone more than you 🥺. I want to spend every single day making you feel loved and special because you deserve it and you desrveeee so much moreee, Jaan. You are my heart. No words can truly capture how much I adore you. Every day theee love grows innn my dill. I just lovee youuu soo soo much. You are my family, my comfort, my wife. We will live our whole life together just each other’s. I’ll make my girl's each and every dream come true. We will wakeee up together and wee will ninii togetherrr. Ap Meri Sanju ho aur ap mere he rahogi. I’ll never let your cutest smileee fade. You make me smile, you make meee happy, just ME & YOU 💟💟❤. With lotsss of loveee meriii jaannn, yourrrr babyyyy, Aruuuuuuu 💗💗💗🤭
 `;
 
   const floatingEmojis = [
@@ -29,8 +29,7 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
 
   // Determine evening phase
   useEffect(() => {
-    const now = new Date();
-    const hour = now.getHours();
+    const hour = new Date().getHours();
     setIsEvening(hour >= 15 && hour < 18);
 
     const interval = setInterval(() => {
@@ -42,38 +41,39 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
   }, []);
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start font-poppins overflow-hidden bg-gradient-to-b from-pink-200 via-pink-300 to-rose-200">
+    <div className="min-h-screen relative flex flex-col items-center justify-start font-poppins overflow-hidden">
 
-      {/* Sunset Sky Top 1/3 with smooth reddish-orange → pink blend */}
-      {isEvening && (
-        <div className="absolute top-0 left-0 w-full h-[35%] overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#FF6B3C] via-[#FF3E3E] to-[#FECFEF] opacity-95"></div>
+      {/* Top 1/3 Sunset with smooth fade */}
+      <div className="absolute top-0 left-0 w-full h-[35%] overflow-hidden">
+        <div className="absolute w-full h-full bg-gradient-to-b from-[#FF6B3C] via-[#FF3E3E] to-transparent"></div>
 
-          {/* Sun */}
+        {/* Sun */}
+        <motion.div
+          className="absolute left-1/2 transform -translate-x-1/2 w-16 h-16 bg-yellow-300 rounded-full shadow-[0_0_40px_10px_rgba(255,200,0,0.4)]"
+          animate={{ top: ["10%", "70%"] }}
+          transition={{ duration: 20, ease: "easeInOut", repeat: Infinity, repeatType: "loop" }}
+        />
+
+        {/* Clouds */}
+        {[...Array(4)].map((_, i) => (
           <motion.div
-            className="absolute left-1/2 transform -translate-x-1/2 w-16 h-16 bg-yellow-300 rounded-full shadow-[0_0_40px_10px_rgba(255,200,0,0.4)]"
-            animate={{ top: ["10%", "70%"] }}
-            transition={{ duration: 20, ease: "easeInOut", repeat: Infinity, repeatType: "loop" }}
+            key={i}
+            className="absolute bg-white/70 rounded-full blur-xl"
+            style={{
+              width: `${80 + i * 30}px`,
+              height: `${40 + i * 15}px`,
+              top: `${10 + i * 10}%`,
+              zIndex: i % 2 === 0 ? 10 : 5
+            }}
+            initial={{ x: i % 2 === 0 ? "-30%" : "120%" }}
+            animate={{ x: i % 2 === 0 ? "120%" : "-30%" }}
+            transition={{ duration: 40 + i * 20, repeat: Infinity, ease: "linear" }}
           />
+        ))}
+      </div>
 
-          {/* Clouds */}
-          {[...Array(4)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute bg-white/70 rounded-full blur-xl"
-              style={{
-                width: `${80 + i * 30}px`,
-                height: `${40 + i * 15}px`,
-                top: `${10 + i * 10}%`,
-                zIndex: i % 2 === 0 ? 10 : 5
-              }}
-              initial={{ x: i % 2 === 0 ? "-30%" : "120%" }}
-              animate={{ x: i % 2 === 0 ? "120%" : "-30%" }}
-              transition={{ duration: 40 + i * 20, repeat: Infinity, ease: "linear" }}
-            />
-          ))}
-        </div>
-      )}
+      {/* Bottom 2/3 Pink Area with smooth blending */}
+      <div className="absolute top-[35%] left-0 w-full h-[65%] bg-gradient-to-b from-transparent via-pink-300 to-rose-200"></div>
 
       {/* Floating Emojis */}
       {[...Array(25)].map((_, i) => {
