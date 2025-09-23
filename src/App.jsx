@@ -59,10 +59,18 @@ From the moment we met I somehow knew in my heart that youuu are the one and sin
     delay: Math.random() * 3
   }));
 
-  return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start font-poppins overflow-hidden"
-         style={{background: 'linear-gradient(to bottom, #FF8C42 0%, #FFC3A0 33%, #FFC3A0 100%)'}}>
+  // Background style based on time
+  const hour = new Date().getHours();
+  const isPinkTime = hour >= 5 && hour < 15;
+  const backgroundStyle = isPinkTime
+    ? { background: "linear-gradient(to bottom, #fbc2eb, #fda4af)" } // full screen pink from 5am–3pm
+    : { background: "linear-gradient(to bottom, #fbc2eb 33%, #fbc2eb 100%)" }; // bottom 2/3 pink from 3pm–5am
 
+  return (
+    <div
+      className="min-h-screen relative flex flex-col items-center justify-start font-poppins overflow-hidden"
+      style={backgroundStyle}
+    >
       {/* Top 1/3 Sunset */}
       {isEvening && (
         <div className="absolute top-0 left-0 w-full h-1/3 overflow-hidden">
